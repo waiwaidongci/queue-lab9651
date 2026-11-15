@@ -16,7 +16,7 @@ while True:
         if not run or run.status!=RunStatus.QUEUED:continue
         run.status=RunStatus.RUNNING;db.commit()
         try:
-            run.result=calculate_run(run.input_snapshot,run.customers,run.warmup,run.replications,run.seed,run.confidence);run.status=RunStatus.COMPLETED
+            run.result=calculate_run(db,run.input_snapshot,run.customers,run.warmup,run.replications,run.seed,run.confidence);run.status=RunStatus.COMPLETED
             Path(f"/artifacts/run-{run.id}.json").write_text(json.dumps(run.result,ensure_ascii=False));log(db,"worker","simulation.completed",run.id)
         except Exception as e:run.status=RunStatus.FAILED;run.error=str(e);traceback.print_exc()
         db.commit()
